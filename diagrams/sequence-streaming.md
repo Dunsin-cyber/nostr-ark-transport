@@ -10,7 +10,8 @@ sequenceDiagram
     participant A as ASP
 
     W->>R: ["REQ", "rounds-sub",<br/>{kinds:[7483], authors:[asp_pubkey],<br/>"#stream":["rounds"], since: t0}]
-    R-->>W: ["EOSE", "rounds-sub"]  %% no backfill needed at t0
+    %% no backfill needed at t0
+    R-->>W: ["EOSE", "rounds-sub"]
 
     Note over A: ASP enters new round phase
 

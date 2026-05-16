@@ -7,13 +7,13 @@ sequenceDiagram
     autonumber
     participant U as User
     participant W as Wallet
-    participant R1 as Initial relay<br/>(from URI)
-    participant R2 as ASP's NIP-65 relay<br/>(discovered)
+    participant R1 as Initial relay (from URI)
+    participant R2 as Second relay (from NIP-65)
     participant A as ASP
 
     U->>W: scan or paste<br/>"ark+nostr://asp_pubkey?relay=wss://r1"
 
-    W->>W: parse URI →<br/>(asp_pubkey, [wss://r1])
+    W->>W: parse URI -><br/>(asp_pubkey, [wss://r1])
 
     W->>R1: ["REQ", "info-sub",<br/>{kinds:[13483], authors:[asp_pubkey], limit:1}]
     R1->>W: ["EVENT", "info-sub", info_event]
@@ -25,7 +25,7 @@ sequenceDiagram
     R1->>W: ["EVENT", "rl-sub", relay_list_event]
     R1-->>W: ["EOSE", "rl-sub"]
     W->>R1: ["CLOSE", "rl-sub"]
-    W->>W: parse "r" tags → [wss://r1, wss://r2, wss://r3]
+    W->>W: parse "r" tags -> [wss://r1, wss://r2, wss://r3]
 
     Note over W: Wallet now has full ASP record. Persists.
 
@@ -34,7 +34,8 @@ sequenceDiagram
     W->>R1: ["EVENT", req_event for GetInfo]
     W->>R2: ["EVENT", req_event for GetInfo]
     R1->>A: ["EVENT", req_event]
-    R2->>A: ["EVENT", req_event]  %% ASP dedupes by event id
+    %% ASP dedupes by event id
+    R2->>A: ["EVENT", req_event]
     A->>R1: ["EVENT", resp_event]
     R1->>W: ["EVENT", resp_event]
     W->>W: ASP confirmed reachable;<br/>onboarding complete
