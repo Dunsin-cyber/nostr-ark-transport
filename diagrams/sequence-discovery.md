@@ -38,7 +38,7 @@ sequenceDiagram
     R2->>A: ["EVENT", req_event]
     A->>R1: ["EVENT", resp_event]
     R1->>W: ["EVENT", resp_event]
-    W->>W: ASP confirmed reachable;<br/>onboarding complete
+    W->>W: ASP confirmed reachable,<br/>onboarding complete
 ```
 
 Trust posture: the wallet trusts whatever channel delivered the URI. The kind 13483 info event is signed by the ASP's pubkey, so the wallet can confirm the relay didn't fabricate it. The wallet cannot, from Nostr alone, confirm that the npub belongs to the real world ASP the user thinks it does. A NIP 05 verifier file (`/.well-known/nostr.json` on a known domain) can carry an additional human readable bind, but that is out of scope for the core transport.

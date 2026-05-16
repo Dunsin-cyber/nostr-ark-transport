@@ -39,7 +39,7 @@ sequenceDiagram
     A->>R: ["EVENT", evt4]
     R->>W: ["EVENT", "rounds-sub", evt4]
 
-    Note over W: round complete; wallet keeps subscription open for next round
+    Note over W: round complete, wallet keeps subscription open for next round
 ```
 
 For per client streams (mailbox, indexer subscription) the shape is the same with two changes. Each event additionally carries `["p", client_pubkey]` and `["sub-id", <id>]` tags, and the filter includes `"#p":[client_pubkey], "#sub-id":[id]`. Event content is NIP 44 encrypted to the client.
