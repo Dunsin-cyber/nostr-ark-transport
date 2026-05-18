@@ -431,11 +431,23 @@ NIP 59 still leaks: total traffic volume per outer relay, and the fact that some
 
 ### 7.6 First contact ASP authentication
 
-TLS gives the client a server authentication step: the cert proves the server's DNS name (or pinned cert) is the one the wallet expected. Nostr offers no PKI equivalent; an ASP pubkey is just bits.
+TLS gives the client a server authentication step: the cert proves the server's DNS name (or pinned cert) is the one the wallet expected. Nostr offers no PKI equivalent; an ASP pubkey is just bits. After first contact the wallet pins the npub and any subsequent message must be Schnorr signed by that pubkey. The open question is what happens **before** the pin: how the wallet decides it is safe to pin this npub the first time it sees it.
 
-This proposal punts on PKI. The user gets the npub out of band (QR code, link, page) and trusts whatever the source said. Once the wallet has the npub, it can detect a MITM (the attacker would have to sign with a key the wallet did not pin), but it cannot detect that the **original** npub was malicious. Same trust model as scanning a Lightning node pubkey from a QR code today.
+Three candidate approaches. None is picked here.
 
-Pragmatic addition: ASPs should publish a NIP 05 verifier file at `https://asp.example.com/.well-known/nostr.json` linking a human readable identifier (`asp@asp.example.com`) to their pubkey. Wallets can show the identifier in the UI; it doesn't eliminate the trust problem but improves the auditability of "is this the npub I think it is".
+**A. Pin on first use.** The wallet trusts whatever channel delivered the npub (a QR code at the ASP's office, the ASP's website, a friend's recommendation) and pins it after the user scans or pastes it.
+
+*Tradeoff.* Simplest. No external dependencies. Works for any ASP including those with no clearnet presence. Vulnerable to phishing on day one: a fake QR code or a lookalike domain hands the user the wrong npub and there is no automatic check. Same trust model as scanning a Lightning node URI today. Best when the operator has no clearnet domain or wants minimum dependencies.
+
+**B. NIP 05 layered over an HTTPS domain.** The ASP publishes `https://asp.example.com/.well-known/nostr.json` linking a human readable identifier (`asp@asp.example.com`) to its pubkey. The wallet fetches the file over HTTPS, the CA system verifies the cert for the domain, and the wallet confirms the pubkey matches what the verified domain claims.
+
+*Tradeoff.* Brings the CA model back into the picture, but only for the first contact step. Familiar UX, the identifier reads like an email address. Requires the ASP to run a clearnet HTTPS domain, which partly defeats Nostr's censorship resistance for the bootstrap step (an already pinned wallet still works fine if the domain is later blocked, only new users are affected). Best when the ASP already has a clearnet presence.
+
+**C. Out of band attestation.** A known third party (industry registry, Ark Foundation, similar) signs a list of legitimate ASPs and their pubkeys. Wallets ship with or fetch this list and use it to verify any npub on first contact.
+
+*Tradeoff.* Adds a central trust root, which is precisely what Nostr is built to avoid. Easy to audit because there is one source. Hard to curate fairly (who decides who is on the list, who removes bad actors). Probably only suitable as an optional layer on top of A or B for users who want it. Best when an authoritative registry is acceptable and the trust assumption fits the threat model.
+
+After first contact all three approaches are equivalent. The choice only changes where trust is anchored at the moment of pinning.
 
 ## 8. Performance and operational considerations
 
@@ -450,6 +462,7 @@ Estimates below. To be benchmarked.
 
 ## 9. Open questions and risks
 
+* **First contact ASP authentication.** Nostr offers no PKI equivalent of TLS's CA chain. The wallet trusts the channel that delivers the npub at first sight and pins it. Three candidate approaches in §7.6 (pin on first use, NIP 05 over an HTTPS domain, out of band attestation). Not decided. This is the hardest open question and the place I would most value the team's view.
 * **Whose surface goes first.** arkd and bark have non overlapping methods. This is a wallet developer ergonomics question, not a NIP blocker. The NIP scope is the envelope (connection, encryption, correlation, streaming, discovery); each implementation's methods ride inside as opaque payloads. Wallets that target both kinds of ASP ship two adapters, the way Lightning wallets that target both LND and Core Lightning do. `nip-draft.md` takes the envelope only path; a later revision could elevate one implementation's method set to canonical.
 * **Kind allocation.** Four kinds requested. NIP allocations need a PR to `nostr-protocol/nips`; numbers shouldn't be reserved before community review.
 * **Backfill window.** How far back into a stream can a client resync after disconnect? Depends on the relay's storage policy. The ASP can advertise a recommendation but cannot enforce it for relays it doesn't run. Wallets that disconnect for longer than the worst case retention need to re derive state by other means (chain observation, gRPC).
