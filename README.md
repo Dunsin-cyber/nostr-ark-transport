@@ -224,11 +224,19 @@ The candor here is deliberate — the full treatment is in [design.md §7–§9]
 
 ## Maintainer
 
-> **[ Your name / npub — please fill in ]**
+> **Dunsin** — `dunsin@getalby.com` (NIP-05)
 >
-> *[ One or two lines: your background, prior work, and why you're the right person to build this —
-> community ties and lived experience of the censorship this addresses. This is the
-> builder↔community link grant reviewers weigh; keep it concrete. ]*
+> *I build in the Lightning and Nostr ecosystem. I've rewritten and implemented much of the Nostr
+> layer across [Alby](https://getalby.com)'s tooling, did Summer of Bitcoin at Alby, i'm a finalist
+> in Bitcoin Open Source Software 2026 (BOSS 2026), and have deep working knowledge of cryptography.
+> Alongside that I'm an open-source contributor to [Arkade](https://github.com/arkade-os)'s
+> implementation of the Ark protocol, with merged and in-review work across `arkd` (the Go server),
+> the Go and TypeScript SDKs, and the Arkade Wallet — touching exactly the parts this proposal
+> builds on: server-side intent and event handling, scheduled-task durability, and SDK connection
+> resilience. I already have a working proof of concept where `arkd` holds a persistent Nostr
+> identity, subscribes to a relay on startup, and round-trips a `get_info` call over Nostr on
+> regtest. So I'm building from a codebase and a transport I already know end-to-end, not from
+> scratch.*
 
 ## Snapshot and drift warning
 
