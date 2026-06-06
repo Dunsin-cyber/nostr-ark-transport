@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -nc '^```' README.md)",
+      "Bash(grep -n '^```' README.md)",
+      "Bash(timeout 60 npx --yes --offline @mermaid-js/mermaid-cli -i README.md -o /tmp/readme-mmd-check.svg)",
+      "Bash(PUPPETEER_SKIP_DOWNLOAD=true npx --yes @mermaid-js/mermaid-cli@latest -p /tmp/puppeteer-config.json -i README.md -o /tmp/readme-mmd-check.md)"
+    ]
+  }
+}
