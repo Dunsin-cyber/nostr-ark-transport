@@ -224,7 +224,7 @@ The candor here is deliberate — the full treatment is in [design.md §7–§9]
 
 ## Maintainer
 
-> **Dunsin** — `dunsin@getalby.com` (NIP-05)
+> **Dunsin Abisuwa** — `dunsin@getalby.com` (NIP-05)
 >
 > *I build in the Lightning and Nostr ecosystem. I've rewritten and implemented much of the Nostr
 > layer across [Alby](https://getalby.com)'s tooling, did Summer of Bitcoin at Alby, i'm a finalist
